@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>NanoTensor: WASM Demo</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #ccc;
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        .panel {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #3b82f6;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        #log {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            color: #a1a1aa;
+        }
+
+        .highlight {
+            color: #10b981;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="panel">
+        <h1>NanoTensor // WASM Engine</h1>
+        <p>Running C++ Attention Mechanism in Browser (No Server-Side Compute)</p>
+
+        <div style="margin-bottom: 20px;">
+            <label>Sequence Length: <input type="number" id="seq" value="4"
+                    style="background:#222; border:1px solid #444; color:white; width:60px;"></label>
+            <label>Embed Dim: <input type="number" id="dim" value="4"
+                    style="background:#222; border:1px solid #444; color:white; width:60px;"></label>
+        </div>
+
+        <button onclick="runInference()" id="runBtn">INITIALIZE WASM MODULE...</button>
+
+        <div id="log">Status: Loading nanotensor.wasm...</div>
+    </div>
+
+    <script>
+        var Module = {
+            onRuntimeInitialized: function () {
+                document.getElementById('runBtn').innerText = "RUN ATTENTION (C++)";
+                log("System: WASM Module Loaded. Ready.");
+            }
+        };
+
+        function log(msg) {
+            document.getElementById('log').innerText += "\n" + msg;
+        }
+
+        function runInference() {
+            try {
+                const seq = parseInt(document.getElementById('seq').value);
+                const dim = parseInt(document.getElementById('dim').value);
+                const size = seq * dim;
+
+                log(`\n[JS] Generating random tensors (${seq}x${dim})...`);
+
+                // Random data
+                let q = new Module.VectorFloat();
+                let k = new Module.VectorFloat();
+                let v = new Module.VectorFloat();
+
+                for (let i = 0; i < size; i++) {
+                    q.push_back(Math.random());
+                    k.push_back(Math.random());
+                    v.push_back(Math.random());
+                }
+
+                log("[JS] Transferring memory to WASM Heap...");
+                const start = performance.now();
+
+                // Call C++
+                const result = Module.run_attention(seq, dim, q, k, v);
+
+                const end = performance.now();
+                log(`[C++] Attention Computed in ${(end - start).toFixed(2)}ms`);
+
+                // Show snippet
+                let outStr = "[C++] Output Tensor Snippet:\n";
+                for (let i = 0; i < Math.min(4, seq); i++) {
+                    outStr += "  [ ";
+                    for (let j = 0; j < Math.min(4, dim); j++) {
+                        outStr += result.get(i * dim + j).toFixed(4) + " ";
+                    }
+                    outStr += "... ]\n";
+                }
+                log(outStr);
+
+                // Cleanup
+                q.delete(); k.delete(); v.delete(); result.delete();
+
+            } catch (e) {
+                log("Error: " + e);
+            }
+        }
+    </script>
+    <script src="nanotensor.js"></script>
+</body>
+
+</html>

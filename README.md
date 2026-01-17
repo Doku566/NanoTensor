@@ -30,3 +30,17 @@ Running this on a CPU without fused kernels (FlashAttention) or BLAS libraries (
 *   `include/nanotensor/tensor.hpp`: Manual memory management (Raw pointers).
 *   `src/ops.cpp`: Mathematical implementation of Attention.
 *   `src/quantization.cpp`: FP32 to INT8 conversion logic.
+
+## WebAssembly Demo (Browser Inference)
+To compile NanoTensor for the web (WASM), use Emscripten:
+
+```bash
+emcc src/ops.cpp src/wasm_bindings.cpp -I include \
+  -o web/nanotensor.js \
+  -s WASM=1 \
+  -s ALLOW_MEMORY_GROWTH=1 \
+  -s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" \
+  --bind \
+  -O3
+```
+Then serve the `web/` folder (`python -m http.server`) and open `index.html`.

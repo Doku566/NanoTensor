@@ -40,7 +40,7 @@ public:
         }
     }
 
-    // No copy constructor (Simplicity for now, or could implement deep copy)
+    // Rule of Five: Delete Copy to prevent double-free (unique ownership semantics for raw ptr demo)
     Tensor(const Tensor&) = delete;
     Tensor& operator=(const Tensor&) = delete;
 
@@ -48,6 +48,21 @@ public:
     Tensor(Tensor&& other) noexcept : data_(other.data_), shape_(std::move(other.shape_)), size_(other.size_) {
         other.data_ = nullptr;
         other.size_ = 0;
+    }
+
+    // Move assignment
+    Tensor& operator=(Tensor&& other) noexcept {
+        if (this != &other) {
+            delete[] data_; // Clean up current resources
+            
+            data_ = other.data_;
+            shape_ = std::move(other.shape_);
+            size_ = other.size_;
+            
+            other.data_ = nullptr;
+            other.size_ = 0;
+        }
+        return *this;
     }
 
     float* data() { return data_; }
