@@ -1,0 +1,10 @@
+^C:\USERS\DOMIN\DESKTOP\APLICACION PARA AWS\NANOTENSOR\BUILD\CMAKEFILES\C18B66BC6ED4A6F75A4A6F055491C539\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor" "-BC:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build/NanoTensor.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

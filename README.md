@@ -20,6 +20,7 @@ $$
 NanoTensor includes an INT8 quantization module (`src/quantization.cpp`) to simulate the compression used in production models (like LLaMA.cpp).
 *   **Method**: Symmetric Linear Quantization.
 *   **Effect**: Reduces memory footprint by ~75% (4 bytes $\to$ 1 byte per weight).
+*   **Storage**: One FP32 scale factor is stored per tensor (Tensor-wise quantization).
 
 ## The "Scar": Why this is slow
 Running this on a CPU without fused kernels (FlashAttention) or BLAS libraries (OpenBLAS/MKL) highlights the importance of hardware-aware optimization.

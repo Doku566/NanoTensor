@@ -1,0 +1,4 @@
+C:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build/CMakeFiles/nanotensor_core.dir
+C:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build/CMakeFiles/demo_transformer.dir
+C:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/domin/Desktop/APLICACION PARA AWS/NanoTensor/build/CMakeFiles/ZERO_CHECK.dir
